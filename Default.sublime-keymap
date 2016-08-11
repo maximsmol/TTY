@@ -1,0 +1,633 @@
+[
+	{
+		"keys": ["up"],
+		"command": "tty_send_escaped",
+		"args": {"chars": "[A"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["right"],
+		"command": "tty_send_escaped",
+		"args": {"chars": "[B"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["down"],
+		"command": "tty_send_escaped",
+		"args": {"chars": "[C"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["left"],
+		"command": "tty_send_escaped",
+		"args": {"chars": "[D"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+	{
+		"keys": ["ctrl+c"],
+		"command": "tty_send_signal",
+		"args": {"signal_name": "SIGINT"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+d"],
+		"command": "tty_send_eof",
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+	{
+		"keys": ["enter"],
+		"command": "tty_send_chars",
+		"args": {"chars": "\n"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [" "],
+		"command": "tty_send_chars",
+		"args": {"chars": " "},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["backspace"],
+		"command": "tty_send_chars",
+		"args": {"chars": "\b"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["tab"],
+		"command": "tty_send_chars",
+		"args": {"chars": "\t"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+
+
+
+	{
+		"keys": ["`"],
+		"command": "tty_send_chars",
+		"args": {"chars": "`"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["1"],
+		"command": "tty_send_chars",
+		"args": {"chars": "1"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["2"],
+		"command": "tty_send_chars",
+		"args": {"chars": "2"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["3"],
+		"command": "tty_send_chars",
+		"args": {"chars": "3"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["4"],
+		"command": "tty_send_chars",
+		"args": {"chars": "4"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["5"],
+		"command": "tty_send_chars",
+		"args": {"chars": "5"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["6"],
+		"command": "tty_send_chars",
+		"args": {"chars": "6"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["7"],
+		"command": "tty_send_chars",
+		"args": {"chars": "7"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["8"],
+		"command": "tty_send_chars",
+		"args": {"chars": "8"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["9"],
+		"command": "tty_send_chars",
+		"args": {"chars": "9"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["0"],
+		"command": "tty_send_chars",
+		"args": {"chars": "0"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["-"],
+		"command": "tty_send_chars",
+		"args": {"chars": "-"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["="],
+		"command": "tty_send_chars",
+		"args": {"chars": "="},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["q"],
+		"command": "tty_send_chars",
+		"args": {"chars": "q"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["w"],
+		"command": "tty_send_chars",
+		"args": {"chars": "w"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["e"],
+		"command": "tty_send_chars",
+		"args": {"chars": "e"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["r"],
+		"command": "tty_send_chars",
+		"args": {"chars": "r"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["t"],
+		"command": "tty_send_chars",
+		"args": {"chars": "t"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["y"],
+		"command": "tty_send_chars",
+		"args": {"chars": "y"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["u"],
+		"command": "tty_send_chars",
+		"args": {"chars": "u"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["i"],
+		"command": "tty_send_chars",
+		"args": {"chars": "i"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["o"],
+		"command": "tty_send_chars",
+		"args": {"chars": "o"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["p"],
+		"command": "tty_send_chars",
+		"args": {"chars": "p"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["["],
+		"command": "tty_send_chars",
+		"args": {"chars": "["},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["]"],
+		"command": "tty_send_chars",
+		"args": {"chars": "]"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["\\"],
+		"command": "tty_send_chars",
+		"args": {"chars": "\\"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["a"],
+		"command": "tty_send_chars",
+		"args": {"chars": "a"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["s"],
+		"command": "tty_send_chars",
+		"args": {"chars": "s"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["d"],
+		"command": "tty_send_chars",
+		"args": {"chars": "d"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["f"],
+		"command": "tty_send_chars",
+		"args": {"chars": "f"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["g"],
+		"command": "tty_send_chars",
+		"args": {"chars": "g"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["h"],
+		"command": "tty_send_chars",
+		"args": {"chars": "h"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["j"],
+		"command": "tty_send_chars",
+		"args": {"chars": "j"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["k"],
+		"command": "tty_send_chars",
+		"args": {"chars": "k"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["l"],
+		"command": "tty_send_chars",
+		"args": {"chars": "l"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [";"],
+		"command": "tty_send_chars",
+		"args": {"chars": ";"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["'"],
+		"command": "tty_send_chars",
+		"args": {"chars": "'"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["z"],
+		"command": "tty_send_chars",
+		"args": {"chars": "z"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["x"],
+		"command": "tty_send_chars",
+		"args": {"chars": "x"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["c"],
+		"command": "tty_send_chars",
+		"args": {"chars": "c"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["v"],
+		"command": "tty_send_chars",
+		"args": {"chars": "v"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["b"],
+		"command": "tty_send_chars",
+		"args": {"chars": "b"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["n"],
+		"command": "tty_send_chars",
+		"args": {"chars": "n"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["m"],
+		"command": "tty_send_chars",
+		"args": {"chars": "m"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [","],
+		"command": "tty_send_chars",
+		"args": {"chars": ","},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["."],
+		"command": "tty_send_chars",
+		"args": {"chars": "."},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["/"],
+		"command": "tty_send_chars",
+		"args": {"chars": "/"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+
+
+
+	{
+		"keys": ["~"],
+		"command": "tty_send_chars",
+		"args": {"chars": "~"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["!"],
+		"command": "tty_send_chars",
+		"args": {"chars": "!"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["@"],
+		"command": "tty_send_chars",
+		"args": {"chars": "@"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["#"],
+		"command": "tty_send_chars",
+		"args": {"chars": "#"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["$"],
+		"command": "tty_send_chars",
+		"args": {"chars": "$"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["%"],
+		"command": "tty_send_chars",
+		"args": {"chars": "%"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["^"],
+		"command": "tty_send_chars",
+		"args": {"chars": "^"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["&"],
+		"command": "tty_send_chars",
+		"args": {"chars": "&"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["*"],
+		"command": "tty_send_chars",
+		"args": {"chars": "*"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["("],
+		"command": "tty_send_chars",
+		"args": {"chars": "("},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [")"],
+		"command": "tty_send_chars",
+		"args": {"chars": ")"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["_"],
+		"command": "tty_send_chars",
+		"args": {"chars": "_"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["+"],
+		"command": "tty_send_chars",
+		"args": {"chars": "+"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["Q"],
+		"command": "tty_send_chars",
+		"args": {"chars": "Q"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["W"],
+		"command": "tty_send_chars",
+		"args": {"chars": "W"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["E"],
+		"command": "tty_send_chars",
+		"args": {"chars": "E"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["R"],
+		"command": "tty_send_chars",
+		"args": {"chars": "R"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["T"],
+		"command": "tty_send_chars",
+		"args": {"chars": "T"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["Y"],
+		"command": "tty_send_chars",
+		"args": {"chars": "Y"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["U"],
+		"command": "tty_send_chars",
+		"args": {"chars": "U"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["I"],
+		"command": "tty_send_chars",
+		"args": {"chars": "I"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["O"],
+		"command": "tty_send_chars",
+		"args": {"chars": "O"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["P"],
+		"command": "tty_send_chars",
+		"args": {"chars": "P"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["{"],
+		"command": "tty_send_chars",
+		"args": {"chars": "{"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["}"],
+		"command": "tty_send_chars",
+		"args": {"chars": "}"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["|"],
+		"command": "tty_send_chars",
+		"args": {"chars": "|"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["A"],
+		"command": "tty_send_chars",
+		"args": {"chars": "A"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["S"],
+		"command": "tty_send_chars",
+		"args": {"chars": "S"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["D"],
+		"command": "tty_send_chars",
+		"args": {"chars": "D"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["F"],
+		"command": "tty_send_chars",
+		"args": {"chars": "F"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["G"],
+		"command": "tty_send_chars",
+		"args": {"chars": "G"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["H"],
+		"command": "tty_send_chars",
+		"args": {"chars": "H"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["J"],
+		"command": "tty_send_chars",
+		"args": {"chars": "J"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["K"],
+		"command": "tty_send_chars",
+		"args": {"chars": "K"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["L"],
+		"command": "tty_send_chars",
+		"args": {"chars": "L"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [":"],
+		"command": "tty_send_chars",
+		"args": {"chars": ":"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["\""],
+		"command": "tty_send_chars",
+		"args": {"chars": "\""},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["Z"],
+		"command": "tty_send_chars",
+		"args": {"chars": "Z"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["C"],
+		"command": "tty_send_chars",
+		"args": {"chars": "C"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["V"],
+		"command": "tty_send_chars",
+		"args": {"chars": "V"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["B"],
+		"command": "tty_send_chars",
+		"args": {"chars": "B"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["N"],
+		"command": "tty_send_chars",
+		"args": {"chars": "N"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["M"],
+		"command": "tty_send_chars",
+		"args": {"chars": "M"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["<"],
+		"command": "tty_send_chars",
+		"args": {"chars": "<"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": [">"],
+		"command": "tty_send_chars",
+		"args": {"chars": ">"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["?"],
+		"command": "tty_send_chars",
+		"args": {"chars": "?"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	}
+]

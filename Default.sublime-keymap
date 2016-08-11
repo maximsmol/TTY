@@ -48,7 +48,8 @@
 	},
 	{
 		"keys": ["shift+backspace"],
-		"command": "noop"
+		"command": "noop",
+		"context": [{"key": "tty_is_in_terminal"}]
 	},
 	{
 		"keys": ["tab"],

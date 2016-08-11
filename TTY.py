@@ -39,8 +39,8 @@ def st_assert(*args):
 			st_error('Assertion failed: '+str(arg))
 			raise Exception('Assertion failed: '+str(arg))
 
-def st_exception_in(*args):
-	st_error(' '.join([str(a) for a in args])+'\n\n'+traceback.format_exc())
+def st_exception_in(str):
+	st_error('Exception in '+str+'\n\n'+traceback.format_exc())
 
 def term_death_message(view, process):
 	ret = process.poll()
@@ -290,7 +290,17 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 		self.buffer_size = 0
 
 		# Parsing state
-		self.esc_chars = ''
+		self.private_esc = False
+		self.sel_g0_char_set = False
+
+		self.past_esc_chars = ''
+		self.past_esc_chars_count = 0
+
+		self.await_char = False
+
+		self.await_num = False
+		self.numstr = ''
+		self.nums = []
 
 		sublime_plugin.TextCommand.__init__(self, view)
 
@@ -319,10 +329,12 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 			return data.decode(self.BINARY_ENCODING)
 		return data
 
+	def line_count(self):
+		return self.view.rowcol(self.view.size())[0]
+
 	#
 	# Cursor control
 	def update_sel(self):
-		# pass
 		sel = self.view.sel()
 		sel.clear()
 		reg = sublime.Region(self.cursor_pos.to_point(), self.cursor_pos.to_point())
@@ -332,6 +344,14 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 
 	def move_to_new_pos(self):
 		self.cursor_pos.copy_from(self.next_cursor_pos)
+
+	def goto(self, r=None, c=None):
+		if r is not None:
+			self.cursor_pos.row(r)
+		if c is not None:
+			self.cursor_pos.col(c)
+
+		self.next_cursor_pos.copy_from(self.cursor_pos)
 
 	#
 	# Input
@@ -356,10 +376,18 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 
 		# st_debug(self.cursor_pos, self.next_cursor_pos)
 		self.replace(self.cursor_pos.to_point(), self.next_cursor_pos.to_point(), self.buffer)
+
 		self.move_to_new_pos()
 
 		self.buffer = ''
 		self.buffer_size = 0
+
+	def append_str(self, s, length):
+		self.buffer += s
+		self.buffer_size += length
+
+		if self.buffer_size > self.MAX_BUFFER_SIZE:
+			self.flush()
 
 	def append_char(self, c):
 		st_assert(len(c) == 1)
@@ -371,26 +399,181 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 			self.flush()
 
 	#
+	# Esc chars utils
+	def append_esc_char(self, c):
+		self.past_esc_chars += c
+		self.past_esc_chars_count += 1
+
+	def reset_esc_parsing_state(self):
+		self.private_esc = False
+		self.sel_g0_char_set = False
+
+		self.past_esc_chars = ''
+		self.past_esc_chars_count = 0
+
+		self.await_char = False
+
+		self.await_num = False
+		self.numstr = ''
+		self.nums = []
+
+	def abort_esc(self, c):
+		st_debug('Unknown escape sequence:', self.past_esc_chars+c)
+
+		self.append_str(self.past_esc_chars, self.past_esc_chars_count)
+
+		self.reset_esc_parsing_state()
+
+	def add_num(self):
+		self.nums.append(int(self.numstr) if self.numstr else None)
+		self.numstr = ''
+
+	def esc_done(self, esc):
+		# st_debug('ESC:', esc, self.nums)
+
+		if esc == 'cursor_position_absolute-CUP':
+			self.flush()
+
+			r = self.nums[0] if len(self.nums) > 0 else 1
+			c = self.nums[1] if len(self.nums) > 1 else 1
+
+			self.goto(r-1, c-1)
+		elif esc == 'cursor_position_absolute_column-CHA':
+			self.flush()
+
+			c = self.nums[0] if len(self.nums) > 0 else 0
+
+			self.goto(None, c-1)
+		elif esc == 'line_position_absolute-VPA':
+			self.flush()
+
+			r = self.nums[0] if len(self.nums) > 0 else 1
+			c = self.nums[1] if len(self.nums) > 1 else self.cursor_pos.col()+1
+
+			self.goto(r-1, c-1)
+		else:
+			st_debug('Unhandled escape sequence:', esc, self.nums)
+			pass
+
+		self.reset_esc_parsing_state()
+
+	#
 	# Actual work
+	def normal_parse(self,c):
+		if c == '\r':
+			self.flush()
+
+			self.cursor_pos.col(0)
+			self.next_cursor_pos.col(0)
+		elif c == '\n':
+			self.add_line()
+			self.cursor_pos.move_rel(1, 0)
+			self.next_cursor_pos.move_rel(1, 0)
+		elif c == '\b':
+			self.flush()
+
+			self.cursor_pos.move_rel(0, -1)
+			self.next_cursor_pos.move_rel(0, -1)
+
+		elif c == ESC:
+			self.append_esc_char(ESC)
+		elif c == CSI[1] and self.past_esc_chars == ESC:
+			self.append_esc_char(CSI[1])
+			self.await_num = True
+		elif c == ';' and self.await_num:
+			self.append_esc_char(';')
+			self.add_num()
+		else:
+			if self.past_esc_chars == ESC:
+				if c == '(':
+					self.append_esc_char('(')
+
+					self.await_char = True
+					self.sel_g0_char_set = True
+					return
+				elif c == '=':
+					self.esc_done('application_keypad-DECKPAM')
+					return
+				elif c == '>':
+					self.esc_done('normal_keypad-DECKPNM')
+					return
+				self.abort_esc(c)
+
+			self.append_char(c)
+			self.next_cursor_pos.move_rel(0, 1)
+
 	def new_data(self, str):
 		for c in str:
-			if c == '\r':
-				self.flush()
+			# self.append_char(c)
+			# self.cursor_pos.move_rel(0, 1)
+			# self.next_cursor_pos.move_rel(0, 1)
+			# continue
 
-				self.cursor_pos.col(0)
-				self.next_cursor_pos.col(0)
-			elif c == '\n':
-				self.add_line()
-				self.cursor_pos.move_rel(1, 0)
-				self.next_cursor_pos.move_rel(1, 0)
-			elif c == '\b':
-				self.flush()
+			if self.await_num:
+				if c.isdigit():
+					self.append_esc_char(c)
+					self.numstr += c
+				elif c == ';':
+					self.append_esc_char(';')
+					self.add_num()
+				else:
+					self.await_num = False
 
-				self.cursor_pos.move_rel(0, -1)
-				self.next_cursor_pos.move_rel(0, -1)
+					if self.past_esc_chars != CSI:
+						self.add_num()
+
+					if self.private_esc:
+						if c == 'h':
+							self.esc_done('private_mode_set-DECSET')
+							continue
+						elif c == 'l':
+							self.esc_done('private_reset_mode-DECRST')
+							continue
+					else:
+						if c == '?':
+							self.append_esc_char('?')
+
+							self.await_num = True
+							self.private_esc = True
+							continue
+						elif c == 'd':
+							self.esc_done('line_position_absolute-VPA')
+							continue
+						elif c == 'r':
+							self.esc_done('set_scroll_region-DECSTBM')
+							continue
+						elif c == 'm':
+							self.esc_done('character_attributes-SGR')
+							continue
+						elif c == 'l':
+							self.esc_done('reset_mode-RM')
+							continue
+						elif c == 'P':
+							self.esc_done('delete_characters-DCH')
+							continue
+						elif c == 'H':
+							self.esc_done('cursor_position_absolute-CUP')
+							continue
+						elif c == 'J':
+							self.esc_done('erase_in_display-ED')
+							continue
+						elif c == 'G':
+							self.esc_done('cursor_position_absolute_column-CHA')
+							continue
+
+						st_assert(self.past_esc_chars)
+
+					self.abort_esc(c)
+					self.normal_parse(c)
+			elif self.await_char:
+				if self.sel_g0_char_set:
+					self.esc_done('sel_g0_char_set-'+c)
+					continue
+				else:
+					self.abort_esc(c)
+					self.normal_parse(c)
 			else:
-				self.append_char(c)
-				self.next_cursor_pos.move_rel(0, 1)
+				self.normal_parse(c)
 
 	def run_command(self, cmd):
 		self.view.set_name(cmd)
@@ -574,6 +757,9 @@ class TtyEventListener(sublime_plugin.EventListener):
 			st_exception_in('on_query_context')
 
 def plugin_unloaded():
+	if not terminals.data:
+		return
+
 	st_debug('Killing all processes running in terminals')
 	for id in terminals.data:
 		proc = terminals.data[id].process

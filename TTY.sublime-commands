@@ -1,0 +1,17 @@
+[
+	{
+		"caption": "TTY - Open",
+		"command": "tty_open"
+	},
+	{
+		"caption": "TTY - List",
+		"command": "tty_list"
+	},
+	{
+		"caption": "TTY - SIGINT",
+		"command": "tty_send_signal",
+		"args": {
+			"signal_name": "SIGINT"
+		}
+	}
+]

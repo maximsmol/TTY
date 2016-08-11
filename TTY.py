@@ -2,6 +2,14 @@ import sublime, sublime_plugin
 import os, threading, traceback
 import subprocess, pty, shlex, signal, fcntl
 
+# todo: add kill functionality
+# todo: add discard functionality
+# todo: add start/stop functionality
+# todo: add dsusp functionality
+# todo: add rprnt functionality
+# todo: add werase functionality
+# todo: add lnext functionality
+
 ST2 = int(sublime.version()) < 3000
 DEBUG = True
 
@@ -33,6 +41,11 @@ def st_assert(*args):
 
 def st_exception_in(*args):
 	st_error(' '.join([str(a) for a in args])+'\n\n'+traceback.format_exc())
+
+def term_death_message(view, process):
+	ret = process.poll()
+	data = [view.name(), '('+str(view.buffer_id())+')', 'pid:', str(process.pid), 'returned:', str(ret) if ret else 'unknown']
+	return ' '.join(data)
 
 ESC = '\x1B'
 CSI = ESC+'['
@@ -195,6 +208,11 @@ class TerminalContainer:
 
 	def del_view(self, view):
 		self._del(TerminalContainer._key_from_view(view))
+		st_debug('Terminal deleted. Terminals left:', len(self.data))
+
+	def try_del_view(self, view):
+		if view.buffer_id() in self.data:
+			self.del_view(view)
 
 	def get_data_of(self, view):
 		return self._get(TerminalContainer._key_from_view(view))
@@ -217,6 +235,9 @@ class CursorPos:
 
 		self.row_data = row
 		self.col_data = col
+
+	def __str__(self):
+		return str(self.row())+'-'+str(self.col())+'('+str(self.to_point())+')'
 
 	def copy_from(self, that):
 		self.row(that.row())
@@ -257,7 +278,7 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 	BINARY_ENCODING = 'ascii'
 
 	def __init__(self, view):
-		self.proccess = None
+		self.process = None
 		self.running = False
 
 		self.master = None
@@ -267,6 +288,9 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 
 		self.buffer = ''
 		self.buffer_size = 0
+
+		# Parsing state
+		self.esc_chars = ''
 
 		sublime_plugin.TextCommand.__init__(self, view)
 
@@ -283,7 +307,7 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 		st_assert(self.running)
 
 	def update_running_info(self):
-		self.running = self.proccess.poll() is None
+		self.running = self.process.poll() is None
 
 		return self.running
 
@@ -308,7 +332,6 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 
 	def move_to_new_pos(self):
 		self.cursor_pos.copy_from(self.next_cursor_pos)
-		self.update_sel()
 
 	#
 	# Input
@@ -331,6 +354,7 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 		if self.buffer_size == 0:
 			return
 
+		# st_debug(self.cursor_pos, self.next_cursor_pos)
 		self.replace(self.cursor_pos.to_point(), self.next_cursor_pos.to_point(), self.buffer)
 		self.move_to_new_pos()
 
@@ -349,21 +373,21 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 	#
 	# Actual work
 	def new_data(self, str):
-		cursor_moved_manually_after_nl = False
 		for c in str:
 			if c == '\r':
-				self.next_cursor_pos.move_rel(0, -self.cursor_pos.col())
+				self.flush()
+
 				self.cursor_pos.col(0)
-
-				cursor_moved_manually_after_nl = True
+				self.next_cursor_pos.col(0)
 			elif c == '\n':
-				if cursor_moved_manually_after_nl:
-					self.flush()
-					cursor_moved_manually_after_nl = False
-
-				self.cursor_pos.new_line()
-				self.next_cursor_pos.new_line()
 				self.add_line()
+				self.cursor_pos.move_rel(1, 0)
+				self.next_cursor_pos.move_rel(1, 0)
+			elif c == '\b':
+				self.flush()
+
+				self.cursor_pos.move_rel(0, -1)
+				self.next_cursor_pos.move_rel(0, -1)
 			else:
 				self.append_char(c)
 				self.next_cursor_pos.move_rel(0, 1)
@@ -379,11 +403,14 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 			mstr = os.fdopen(masterfd, 'r+'+('b' if self.BINARY else ''), 0)
 			self.master = mstr
 
-			argv = shlex.split(cmd)
-			with subprocess.Popen(argv, stdin=slavefd, stdout=slavefd, stderr=slavefd) as proc:
-				self.proccess = proc
+			new_env = os.environ
+			new_env['TERM'] = 'xterm-256color'
 
-				terminals.add_view(self.view, self.proccess, self)
+			argv = shlex.split(cmd)
+			with subprocess.Popen(argv, stdin=slavefd, stdout=slavefd, stderr=slavefd, env=new_env) as proc:
+				self.process = proc
+
+				terminals.add_view(self.view, self.process, self)
 
 				while self.update_running_info():
 					try:
@@ -393,6 +420,7 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 								break
 							self.new_data(str)
 						self.flush()
+						# self.update_sel()
 					except:
 						self.view.set_name(cmd+' <ERROR>')
 						proc.kill()
@@ -412,23 +440,32 @@ class TtyBecomeTerminalCommand(sublime_plugin.TextCommand):
 				self.run_command(command)
 			except:
 				st_exception_in('tty_become_terminal')
+			finally:
+				st_debug('TTY thread finished:', term_death_message(self.view, self.process))
 
-		threading.Thread(target=work).start()
+				terminals.try_del_view(self.view)
+
+		threading.Thread(target=work, name='TTY').start()
 
 class TtyOpenCommand(sublime_plugin.ApplicationCommand):
 	def run(self):
 		term = sublime.active_window().new_file()
+		term.settings().set('scroll_past_end', True)
 		term.set_scratch(True)
 
 		os.chdir('/Users/maximsmol')
-		term.run_command('tty_become_terminal', {'command': 'bash'})
+		term.run_command('tty_become_terminal', {'command': 'bash -li'})
 
-class TtySendEofCommand(sublime_plugin.TextCommand):
-	def run(self, _):
+class TtySendCharCodesCommand(sublime_plugin.TextCommand):
+	def run(self, _, codes):
 		termdata = terminals.get_data_of(self.view)
 		st_assert(termdata)
 
-		termdata.cmd_instance.send_eof()
+		str = ''
+		for c in codes:
+			str += chr(c)
+
+		termdata.cmd_instance.send_chars(str)
 
 class TtySendCharsCommand(sublime_plugin.TextCommand):
 	def run(self, _, chars):
@@ -452,6 +489,8 @@ class TtySendSignalCommand(sublime_plugin.TextCommand):
 		try:
 			proc = termdata.process
 			st_assert(proc, proc.poll() is None)
+
+			st_debug('Sent signal', signal_name)
 
 			i = SIGNALS.index(signal_name)
 			proc.send_signal(SIGNAL_CODES[i])
@@ -518,7 +557,7 @@ class TtyEventListener(sublime_plugin.EventListener):
 			proc = terminals.get_data_of(view).process
 
 			if proc is not None and proc.poll() is None:
-				st_debug('Killed process running in terminal:', view.name(), '('+str(view.buffer_id())+')', 'pid:', proc.pid)
+				st_debug('on_close: Killed process running in terminal:', term_death_message(view, proc))
 				proc.kill()
 
 				terminals.del_view(view)
@@ -533,3 +572,10 @@ class TtyEventListener(sublime_plugin.EventListener):
 			return None
 		except:
 			st_exception_in('on_query_context')
+
+def plugin_unloaded():
+	st_debug('Killing all processes running in terminals')
+	for id in terminals.data:
+		proc = terminals.data[id].process
+		if proc is not None and proc.poll() is None:
+			proc.kill()

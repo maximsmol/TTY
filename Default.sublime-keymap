@@ -25,17 +25,7 @@
 	},
 
 
-	{
-		"keys": ["ctrl+c"],
-		"command": "tty_send_signal",
-		"args": {"signal_name": "SIGINT"},
-		"context": [{"key": "tty_is_in_terminal"}]
-	},
-	{
-		"keys": ["ctrl+d"],
-		"command": "tty_send_eof",
-		"context": [{"key": "tty_is_in_terminal"}]
-	},
+
 
 
 	{
@@ -57,9 +47,243 @@
 		"context": [{"key": "tty_is_in_terminal"}]
 	},
 	{
+		"keys": ["shift+backspace"],
+		"command": "noop"
+	},
+	{
 		"keys": ["tab"],
 		"command": "tty_send_chars",
 		"args": {"chars": "\t"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+
+	{
+		"keys": ["ctrl+c"],
+		"command": "tty_send_signal",
+		"args": {"signal_name": "SIGINT"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+t"],
+		"command": "tty_send_signal",
+		"args": {"signal_name": "SIGINFO"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+z"],
+		"command": "tty_send_signal",
+		"args": {"signal_name": "SIGTSTP"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+\\"],
+		"command": "tty_send_signal",
+		"args": {"signal_name": "SIGQUIT"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+
+
+
+
+
+	{
+		"keys": ["ctrl+@"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [0]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+a"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [1]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+b"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [2]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	// { // sends SIGINT instead
+	// 	"keys": ["ctrl+c"],
+	// 	"command": "tty_send_char_codes",
+	// 	"args": {"codes": [3]},
+	// 	"context": [{"key": "tty_is_in_terminal"}]
+	// },
+	{
+		"keys": ["ctrl+d"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [4]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+e"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [5]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+f"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [6]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+g"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [7]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+h"], // also BACKSPACE
+		"command": "tty_send_chars",
+		"args": {"chars": "\b"}, // char 8
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+i"], // also TAB
+		"command": "tty_send_chars",
+		"args": {"chars": "\t"}, // char 9
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+j"],
+		"command": "tty_send_chars",
+		"args": {"chars": "\n"},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+k"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [11]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+l"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [12]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+m"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [13]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+n"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [14]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+o"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [15]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+p"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [16]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+q"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [17]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+r"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [18]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+s"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [19]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	// { // sends SIGINFO instead
+	// 	"keys": ["ctrl+t"],
+	// 	"command": "tty_send_char_codes",
+	// 	"args": {"codes": [20]},
+	// 	"context": [{"key": "tty_is_in_terminal"}]
+	// },
+	{
+		"keys": ["ctrl+u"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [21]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+v"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [22]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+w"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [23]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+x"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [24]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+y"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [25]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	// { // sends SIGTSTP instead
+	// 	"keys": ["ctrl+z"],
+	// 	"command": "tty_send_char_codes",
+	// 	"args": {"codes": [26]},
+	// 	"context": [{"key": "tty_is_in_terminal"}]
+	// },
+	{
+		"keys": ["ctrl+["],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [27]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	// { // sends SIGQUIT instead
+	// 	"keys": ["ctrl+\\"],
+	// 	"command": "tty_send_char_codes",
+	// 	"args": {"codes": [28]},
+	// 	"context": [{"key": "tty_is_in_terminal"}]
+	// },
+	{
+		"keys": ["ctrl+]"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [29]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+^"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [30]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+_"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [31]},
+		"context": [{"key": "tty_is_in_terminal"}]
+	},
+	{
+		"keys": ["ctrl+?"],
+		"command": "tty_send_char_codes",
+		"args": {"codes": [127]},
 		"context": [{"key": "tty_is_in_terminal"}]
 	},
 
